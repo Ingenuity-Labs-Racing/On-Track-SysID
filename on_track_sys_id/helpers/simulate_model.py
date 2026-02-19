@@ -1,11 +1,13 @@
-from helpers.vehicle_dynamics_stown import vehicle_dynamics_st
-from helpers.load_model import get_dotdict
+from .vehicle_dynamics_stown import vehicle_dynamics_st
+from .load_model import get_dotdict
 from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-import rospy
-import rospkg
+import logging
+from ament_index_python.packages import get_package_share_directory
+
+logger = logging.getLogger(__name__)
 
 SIMULATION_DURATION = 2.0 # seconds
 SIMULATION_DT = 0.01 # seconds
@@ -56,13 +58,12 @@ class LookupGenerator:
     self.generate_lookup()
     self.find_upper_limits()
     if PLOT_LOOKUP:
-      rospy.logwarn("Lookup Table has been generated. Close the plot window (press Q) to save the lookup table.")
+      logger.warning("Lookup Table has been generated. Close the plot window (press Q) to save the lookup table.")
       self.plot_lookup()
     self.save_lookup()
 
   def load_lookup(self, model, name):
-    rospack = rospkg.RosPack()
-    package_path = rospack.get_path('on_track_sys_id')
+    package_path = get_package_share_directory('on_track_sys_id')
     file_path = os.path.join(package_path, "models", model, name + "_lookup_table.csv")
     self.lookup_table = np.loadtxt(file_path, delimiter=",")
     self.find_upper_limits()
@@ -163,8 +164,7 @@ class LookupGenerator:
     plt.show()
 
   def save_lookup(self):
-    rospack = rospkg.RosPack()
-    path = rospack.get_path('on_track_sys_id')
-    file_path = os.path.join(path, "models", self.racecar_version, self.save_LUT_name + "_lookup_table.csv")
+    package_path = get_package_share_directory('on_track_sys_id')
+    file_path = os.path.join(package_path, "models", self.racecar_version, self.save_LUT_name + "_lookup_table.csv")
     np.savetxt(file_path, self.lookup_table, delimiter=",")
-    rospy.loginfo(f"SAVED LOOKUP TABLE TO: {file_path}")
+    logger.info(f"SAVED LOOKUP TABLE TO: {file_path}")

@@ -1,12 +1,13 @@
 import yaml
 import os
-import rospy
-import rospkg
+import logging
+from ament_index_python.packages import get_package_share_directory
+
+logger = logging.getLogger(__name__)
 
 def save(model, overwrite_existing=True, verbose=False):
 
-  rospack = rospkg.RosPack()
-  package_path = rospack.get_path('on_track_sys_id')
+  package_path = get_package_share_directory('on_track_sys_id')
   file_path = package_path + "/models/" + model['model_name'] +"/" + model['model_name'] +"_"+ model['tire_model'] + ".txt"
   if os.path.isfile(file_path):
     if (verbose): print("Model already exists")
@@ -23,5 +24,5 @@ def save(model, overwrite_existing=True, verbose=False):
 
   # Write data to the file
   with open(file_path, "w") as f:
-      rospy.loginfo(f"MODEL IS SAVED TO: {file_path}")
+      logger.info(f"MODEL IS SAVED TO: {file_path}")
       yaml.dump(model, f, default_flow_style=False)
