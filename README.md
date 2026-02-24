@@ -14,7 +14,17 @@ The identified parameters are then used to generate a Look-Up Table (LUT) for th
 ## Installation
 On-Track SysID is part of the [ForzaETH Race Stack](https://github.com/ForzaETH/race_stack). Please refer to the [installation guide](https://github.com/ForzaETH/race_stack/blob/main/INSTALLATION.md) for detailed instructions and perform the quickstart guide below to run the sysid procedure.
 
-## Usage (Detailed)
+## Usage (ROS2)
+
+ - Launch sys_id.launch
+  ```bash
+ros2 launch on_track_sys_id sys_id_launch.py racecar_version:=NUC2 ackermann_cmd_topic:=/ackermann_cmd save_LUT_name:=<save_LUT_name>
+  ```
+ - Drive the car with a controller until data collection is done.
+ - Move generated lookup table to `race_stack/system_identification/steering_lookup/cfg/`. 
+ - Relaunch time trials.
+
+## Usage (Detailed - ROS1)
 
 To use this node, follow these steps:
 
@@ -79,17 +89,6 @@ To use this node, follow these steps:
     - Move this lookup table into `race_stack/system_identification/steering_lookup/cfg/`.
     - New LUT can be used after relaunching time trials with the new LUT name.
 6. (OPTIONAL) **Repeat**: Repeat all the steps if you can drive the car faster than before with the new generated LUT and you think going even faster is possible with a better model. This would presumably provide a better model that covers higher ranges of slip angles more accurately.
-
-## Usage (Short)
- - Make sure `race_stack/system_identification/on_track_sys_id/src/models/(racecar_version)/(racecar_version)_pacejka.txt` exist with correct parameters.
-
- - Launch sys_id.launch
-  ```bash
-  roslaunch stack_master sys_id.launch save_LUT_name:=<save_LUT_name> plot_model:=<True/False>
-  ```
- - Drive the car with a controller until data collection is done.
- - Move generated lookup table to `race_stack/system_identification/steering_lookup/cfg/`. 
- - Relaunch time trials.
 
 ## Files and Directory Structure
 
